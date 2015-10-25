@@ -9,42 +9,92 @@
   <canvas id="demoCanvas" width="500" height="300"></canvas>
 <script>
   function init() {
-	var canvas = document.getElementById('demoCanvas');
-
-	//set up canvas with two cards 
-	var stage = new createjs.Stage("demoCanvas");
-	var rectangle1 = new createjs.Shape();
-	var rectangle2 = new createjs.Shape();
-	rectangle1.setBounds(0,0,50,100);
-	rectangle2.setBounds(canvas.width - 50,canvas.height,50,100);
-	var bound1 = rectangle1.getBounds();
-	var bound2 = rectangle2.getBounds();
-
-  //draw player 1	
-	rectangle1.graphics.beginFill("deepskyblue").drawRect(bound1.x,bound1.y,50,100);
-	stage.addChild(rectangle1);
-
-  //draw player 2
-	rectangle2.graphics.beginFill("red").drawRect(bound2.x,bound2.y,50,100);
-	stage.addChild(rectangle2);
-
-	var buffer = 50;
-
-//Tweenjs demo: make the cirle move around
-	createjs.Tween.get(rectangle1)
-		.to({alpha: 0}, 0 ,  createjs.Ease.getPowInOut(4))
-		.to({alpha: 1, y: canvas.height/2 }, 1000, createjs.Ease.getPowInOut(4)) 
-		.to({x:canvas.width/2 - bound1.width - buffer}, 1000, createjs.Ease.getPowInOut(4));
-  	//Tweenjs demo: set Frames per second and event listener to trigger update
-  	createjs.Ticker.setFPS(60);
-  	createjs.Ticker.addEventListener("tick", stage);
-
-//Tweenjs demo: make the cirle move around
-	createjs.Tween.get(rectangle2)
-		.to({alpha: 0}, 0 ,  createjs.Ease.getPowInOut(4))
-		.to({alpha: 1, y: 0 -canvas.height/2 }, 1000, createjs.Ease.getPowInOut(4)) 
-		.to({x: 0 -canvas.width/2 + bound2.width + buffer}, 1000, createjs.Ease.getPowInOut(4));
+    var game_vars = setup_game();
+    run_graphics(game_vars);
   }
+
+  function run_graphics(game_vars) {
+    var canvas = document.getElementById('demoCanvas');
+
+    //set up canvas with two cards 
+    var stage = new createjs.Stage("demoCanvas");
+    
+    //run game start graphics 
+    game_start_graphics(canvas, stage);
+
+   //display score
+    display_score(canvas, stage, game_vars);
+  }
+
+function display_score(canvas, stage, game_vars) {
+     var text = new createjs.Text("Score: " + game_vars.score.score, "20px Arial", "#ff7700");
+     text.x = canvas.width - 200;
+     text.y = 100;
+     text.textBaseline = "alphabetic";
+
+    stage.addChild(text);
+    stage.update();
+ 
+}
+function game_start_graphics(canvas, stage) {
+    var rectangle1 = new createjs.Shape();
+    var rectangle2 = new createjs.Shape();
+    rectangle1.setBounds(0,0,50,100);
+    rectangle2.setBounds(canvas.width - 50,canvas.height,50,100);
+    var bound1 = rectangle1.getBounds();
+    var bound2 = rectangle2.getBounds();
+
+    //draw player 1 
+    rectangle1.graphics.beginFill("deepskyblue").drawRect(bound1.x,bound1.y,50,100);
+    stage.addChild(rectangle1);
+
+    //draw player 2
+    rectangle2.graphics.beginFill("red").drawRect(bound2.x,bound2.y,50,100);
+    stage.addChild(rectangle2);
+
+    var buffer = 50;
+
+  //Tweenjs demo: make the cirle move around
+    createjs.Tween.get(rectangle1)
+      .to({alpha: 0}, 0 ,  createjs.Ease.getPowInOut(4))
+      .to({alpha: 1, y: canvas.height/2 }, 1000, createjs.Ease.getPowInOut(4)) 
+      .to({x:canvas.width/2 - bound1.width - buffer}, 1000, createjs.Ease.getPowInOut(4));
+      //Tweenjs demo: set Frames per second and event listener to trigger update
+      createjs.Ticker.setFPS(60);
+      createjs.Ticker.addEventListener("tick", stage);
+
+  //Tweenjs demo: make the cirle move around
+    createjs.Tween.get(rectangle2)
+      .to({alpha: 0}, 0 ,  createjs.Ease.getPowInOut(4))
+      .to({alpha: 1, y: 0 -canvas.height/2 }, 1000, createjs.Ease.getPowInOut(4)) 
+      .to({x: 0 -canvas.width/2 + bound2.width + buffer}, 1000, createjs.Ease.getPowInOut(4));
+
+}
+  function player(health) {
+    this.health = health;
+  }
+
+  function score() {
+    this.score  = 0;
+    function change_score(point) {
+      this.score = this.score + point;
+    }
+  }
+
+  function  setup_game() {
+    player1 = new player(100);
+    player2 = new player(40);
+    score = new score();
+
+    game_vars = new Object();
+    game_vars.score = score; 
+    game_vars.player1 = player1;
+    game_vars.player2 = player2;
+
+    console.log(game_vars)
+    return game_vars;
+  }
+
 
 
 </script>
